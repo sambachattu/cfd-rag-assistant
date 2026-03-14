@@ -1,0 +1,27 @@
+services:
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: cfd-chatbot-backend
+    ports:
+      - "8000:8000"
+    environment:
+      - ALLOWED_ORIGINS=["http://localhost:5173","http://localhost"]
+      # Add to .env file locally, or uncomment below:
+      # - OPENAI_API_KEY=your_openai_api_key
+    volumes:
+      - ./backend/chroma_db:/app/chroma_db
+      - ./backend/uploads:/app/uploads
+    restart: unless-stopped
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: cfd-chatbot-frontend
+    ports:
+      - "5173:80"   # Exposing to Vite's default dev port for local development
+    depends_on:
+      - backend
+    restart: unless-stopped

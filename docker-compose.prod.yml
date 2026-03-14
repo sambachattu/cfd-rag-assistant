@@ -1,0 +1,31 @@
+version: '3.8'
+
+services:
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: cfd-chatbot-backend-prod
+    ports:
+      - "8000:8000"
+    environment:
+      # In EC2, you'll want to add your EC2 Public IP or Domain here:
+      - ALLOWED_ORIGINS=["http://localhost:5173","http://localhost","http://<YOUR_EC2_IP>"]
+      # Make sure to provide your API key in production, typically via .env
+      # - OPENAI_API_KEY=your_openai_api_key
+    volumes:
+      - ./backend/chroma_db:/app/chroma_db
+      - ./backend/uploads:/app/uploads
+    restart: always
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: cfd-chatbot-frontend-prod
+    ports:
+      # Expose port 80 for production web traffic instead of development port
+      - "80:80"
+    depends_on:
+      - backend
+    restart: always
