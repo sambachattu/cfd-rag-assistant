@@ -56,7 +56,32 @@ See individual READMEs:
 - [Backend Setup](./backend/README.md)
 - [Frontend Setup](./frontend/README.md)
 
-### Run Both at Once (after setup)
+### 🐳 Run locally with Docker (Recommended)
+
+1. **Add your API Key**: Create a `.env` file in the `backend/` directory (you can copy `.env.example`).
+2. **Start the containers**:
+```bash
+docker compose up --build
+```
+3. Open **http://localhost:5173** in your browser.
+
+---
+
+### ☁️ Deploy to Production (e.g. EC2)
+
+For production environments, a separate `docker-compose.prod.yml` is provided. It exposes port `80` (HTTP) directly and mounts persistent volumes safely.
+
+1. Ensure your EC2 instance allows inbound traffic on port `80`.
+2. Update `ALLOWED_ORIGINS` in `docker-compose.prod.yml` to include your EC2 public IP or domain.
+3. Start the containers in detached mode:
+```bash
+docker compose -f docker-compose.prod.yml up -d --build
+```
+4. Access the app directly via your server's IP address.
+
+---
+
+### Run Locally (Without Docker)
 
 **Terminal 1 — Backend:**
 ```bash
@@ -101,6 +126,7 @@ cfd-chatbot/
 │   │       └── rag_service.py   # RAG core logic
 │   ├── requirements.txt
 │   ├── .env.example
+│   ├── Dockerfile
 │   └── README.md
 ├── frontend/
 │   ├── src/
@@ -113,6 +139,10 @@ cfd-chatbot/
 │   │   └── services/api.js      # API client
 │   ├── package.json
 │   ├── vite.config.js
+│   ├── Dockerfile
+│   ├── nginx.conf
 │   └── README.md
+├── docker-compose.yml
+├── docker-compose.prod.yml
 └── README.md
 ```
